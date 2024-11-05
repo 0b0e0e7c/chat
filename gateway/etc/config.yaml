@@ -1,0 +1,21 @@
+UserRpcEtcd:
+  Hosts:
+    - 127.0.0.1:2379
+  Key: user.rpc
+
+FriendRpcEtcd:
+  Hosts:
+    - 127.0.0.1:2379
+  Key: friend.rpc
+
+MsgRpcEtcd:
+  Hosts:
+    - 127.0.0.1:2379
+  Key: message.rpc
+
+GroupMsgRpcEtcd:
+  Hosts:
+    - 127.0.0.1:2379
+  Key: groupmessage.rpc
+
+Listen: "127.0.0.1:8888"

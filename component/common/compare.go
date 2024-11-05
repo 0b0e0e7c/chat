@@ -1,6 +1,8 @@
 package common
 
-func LowHigh(a, b int64) (int64, int64) {
+import "golang.org/x/exp/constraints"
+
+func LowHigh[E constraints.Ordered](a, b E) (lower, higher E) {
 	if a > b {
 		return b, a
 	}

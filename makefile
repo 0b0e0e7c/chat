@@ -1,15 +1,19 @@
-.PHONY: all user-service friend-service message-service api
+.PHONY: all userService friendService messageService group-messageService gateway
 
-all: user-service friend-service message-service api
+all:  userService friendService messageService group-messageService gateway
 
-user-service:
-	go build -o bin/user-service.exe ./service/user-service/user.go 
+userService:
+	go build -o bin/userService.exe ./service/userService/user.go
 
-friend-service:
-	go build -o bin/friend-service.exe ./service/friend-service/friend.go 
+friendService:
+	go build -o bin/friendService.exe ./service/friendService/friend.go
 
-message-service:
-	go build -o bin/message-service.exe ./service/message-service/message.go 
+messageService:
+	go build -o bin/messageService.exe ./service/messageService/message.go
 
-api:
-	go build -o bin/api.exe ./gin/. 
+group-messageService:
+	go build -o bin/groupMessageService.exe ./service/groupMessageService/groupmessage.go
+
+gateway:
+	go build -o bin/gateway.exe ./gateway/main.go
+

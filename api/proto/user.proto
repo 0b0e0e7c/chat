@@ -10,9 +10,7 @@ message RegisterRequest {
 }
 
 message RegisterResponse {
-  int64 userId = 1;
-  string username = 2;
-  bool success = 3;
+  int64 user_id = 1;
 }
 
 message LoginRequest {
@@ -22,9 +20,8 @@ message LoginRequest {
 
 message LoginResponse {
   string username = 1;
-  int64 userId = 2;
-  bool success = 3;
-  string token = 4;
+  int64 user_id = 2;
+  string token = 3;
 }
 
 message ValidateRequest {
@@ -33,11 +30,68 @@ message ValidateRequest {
 
 message ValidateResponse {
   bool valid = 1;
-  int64 userId = 2;
+  int64 user_id = 2;
+}
+
+message LogoutRequest {
+  int64 user_id = 1;
+  string token = 2;
+}
+
+message LogoutResponse {
+  bool success = 1;
+}
+
+message UpdateUserProfileRequest {
+  int64 user_id = 1;
+  string avatar = 2;
+  string nickname = 3;
+  string email = 4;
+  int32 status = 5;
+}
+
+message UpdateUserProfileResponse {
+   bool success = 1;
+}
+
+message GetUserProfileRequest {
+  int64 user_id = 1;
+}
+
+message GetUserProfileResponse {
+  string avatar = 1;  
+  string nickname = 2;
+  string email = 3;
+  int32 status = 4;
+}
+
+message CheckUserExistRequest {
+  repeated int64 user_id = 1;
+}
+
+message CheckUserExistResponse {
+  bool exist = 1;
+}
+
+message GetUserNameByIdRequest {
+  repeated int64 user_id = 1;
+}
+
+message GetUserNameByIdResponse {
+  map<int64, string> user_names = 1;
 }
 
 service UserService {
   rpc Register(RegisterRequest) returns (RegisterResponse) {}
   rpc Login(LoginRequest) returns (LoginResponse) {}
+  rpc Logout(LogoutRequest) returns (LogoutResponse) {}
+
   rpc ValidateJWT(ValidateRequest) returns (ValidateResponse) {}
+  
+  rpc UpdateUserProfile(UpdateUserProfileRequest) returns (UpdateUserProfileResponse) {}
+  rpc GetUserProfile(GetUserProfileRequest) returns (GetUserProfileResponse) {}
+
+  rpc CheckUserExist(CheckUserExistRequest) returns (CheckUserExistResponse) {}
+
+  rpc GetUserNameById(GetUserNameByIdRequest) returns (GetUserNameByIdResponse) {}
 }

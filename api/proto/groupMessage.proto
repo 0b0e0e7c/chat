@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package groupMessage;
+
+option go_package = "/groupMessage";
+
+message GroupMessage {
+    int64 msg_id = 1;
+    int64 sender_id = 2;
+    int64 group_id  = 3;
+    string content = 4;
+    int64 timestamp = 5;
+}
+
+message SendGroupMessageRequest {
+    int64 sender_id = 1;
+    int64 group_id = 2;
+    string content = 3;
+}
+
+message SendGroupMessageResponse {
+    bool success = 1;
+    int64 msg_id = 2;
+    int64 timestamp = 3;
+}
+
+message GetGroupMessagesRequest {
+    int64 user_id = 1;          // 发起请求的用户ID
+    int64 group_id = 2;         // 群组ID
+    int64 limit = 3;            // 每次请求返回的最大消息数
+    int64 offset = 4;           // 从第几条记录开始读取
+}
+
+message GetGroupMessagesResponse {
+    repeated GroupMessage messages = 1; // 返回的消息列表
+}
+
+message CreateGroupRequest {
+    int64 user_id = 1;          // 创建群组的用户ID
+    string group_name = 2;      // 群组名称
+}
+
+message CreateGroupResponse {
+    bool success = 1;
+    int64 group_id = 2;
+}
+
+message AddGroupMemberRequest {
+    int64 user_id = 1;          // 发起请求的用户ID
+    int64 group_id = 2;         // 群组ID
+    int64 member_id = 3;        // 被添加的用户ID
+}
+
+message AddGroupMemberResponse {
+    bool success = 1;
+}
+
+service GroupMessageService {
+    rpc SendGroupMessage(SendGroupMessageRequest) returns (SendGroupMessageResponse) {}
+    rpc GetGroupMessages(GetGroupMessagesRequest) returns (GetGroupMessagesResponse) {}
+    rpc CreateGroup(CreateGroupRequest) returns (CreateGroupResponse) {}
+    rpc AddGroupMember(AddGroupMemberRequest) returns (AddGroupMemberResponse) {}
+}

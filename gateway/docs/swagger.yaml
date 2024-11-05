@@ -1,0 +1,866 @@
+basePath: /api/
+definitions:
+  friend.AddFriendRequest:
+    properties:
+      friend_id:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+  friend.AddFriendToGroupRequest:
+    properties:
+      friend_id:
+        type: integer
+      group_id:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+  friend.CreateFriendGroupRequest:
+    properties:
+      group_name:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  friend.DeleteFriendRequest:
+    properties:
+      friend_id:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+  groupMessage.AddGroupMemberRequest:
+    properties:
+      group_id:
+        description: 群组ID
+        type: integer
+      member_id:
+        description: 被添加的用户ID
+        type: integer
+      user_id:
+        description: 发起请求的用户ID
+        type: integer
+    type: object
+  groupMessage.CreateGroupRequest:
+    properties:
+      group_name:
+        description: 群组名称
+        type: string
+      user_id:
+        description: 创建群组的用户ID
+        type: integer
+    type: object
+  groupMessage.GetGroupMessagesRequest:
+    properties:
+      group_id:
+        description: 群组ID
+        type: integer
+      limit:
+        description: 每次请求返回的最大消息数
+        type: integer
+      offset:
+        description: 从第几条记录开始读取
+        type: integer
+      user_id:
+        description: 发起请求的用户ID
+        type: integer
+    type: object
+  groupMessage.GroupMessage:
+    properties:
+      content:
+        type: string
+      group_id:
+        type: integer
+      msg_id:
+        type: integer
+      sender_id:
+        type: integer
+      timestamp:
+        type: integer
+    type: object
+  groupMessage.SendGroupMessageRequest:
+    properties:
+      content:
+        type: string
+      group_id:
+        type: integer
+      sender_id:
+        type: integer
+    type: object
+  handler._BaseResponse:
+    properties:
+      data:
+        description: 数据
+      status:
+        description: 状态
+        example: success
+        type: string
+    type: object
+  handler._ResponseError:
+    properties:
+      error:
+        description: 错误信息
+        example: err msg
+        type: string
+      status:
+        description: 状态
+        example: failed
+        type: string
+    type: object
+  handler.friendGroup:
+    properties:
+      friends:
+        items:
+          $ref: '#/definitions/handler.friends'
+        type: array
+      group_id:
+        type: integer
+      group_name:
+        type: string
+    type: object
+  handler.friends:
+    properties:
+      friend_id:
+        example: 1
+        type: integer
+      friend_username:
+        example: user1
+        type: string
+    type: object
+  message.GetMessagesRequest:
+    properties:
+      limit:
+        description: 每次请求返回的最大消息数
+        type: integer
+      offset:
+        description: 从第几条记录开始读取
+        type: integer
+      peer_id:
+        description: 聊天对象的用户ID
+        type: integer
+      user_id:
+        description: 发起请求的用户ID
+        type: integer
+    type: object
+  message.GetMessagesResponse:
+    properties:
+      messages:
+        description: 返回的消息列表
+        items:
+          $ref: '#/definitions/message.Message'
+        type: array
+    type: object
+  message.Message:
+    properties:
+      content:
+        type: string
+      msg_id:
+        type: integer
+      receiver_id:
+        type: integer
+      sender_id:
+        type: integer
+      timestamp:
+        type: integer
+    type: object
+  message.SendMessageRequest:
+    properties:
+      content:
+        type: string
+      receiver_id:
+        type: integer
+      sender_id:
+        type: integer
+    type: object
+  user.GetUserProfileResponse:
+    properties:
+      avatar:
+        type: string
+      email:
+        type: string
+      nickname:
+        type: string
+      status:
+        type: integer
+    type: object
+  user.LoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  user.LoginResponse:
+    properties:
+      token:
+        type: string
+      user_id:
+        type: integer
+      username:
+        type: string
+    type: object
+  user.LogoutResponse:
+    properties:
+      success:
+        type: boolean
+    type: object
+  user.RegisterRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  user.RegisterResponse:
+    properties:
+      user_id:
+        type: integer
+    type: object
+  user.UpdateUserProfileRequest:
+    properties:
+      avatar:
+        type: string
+      email:
+        type: string
+      nickname:
+        type: string
+      status:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+host: localhost:8888
+info:
+  contact:
+    email: support@example.com
+    name: API Support
+    url: http://www.example.com/support
+  description: This is a chatting API
+  title: Jackey Chatting API
+  version: "1"
+paths:
+  /friend/add:
+    post:
+      consumes:
+      - application/json
+      description: Add a friend by their user ID
+      parameters:
+      - description: Friend ID
+        in: body
+        name: json_object
+        required: true
+        schema:
+          $ref: '#/definitions/friend.AddFriendRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler._BaseResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler._ResponseError'
+      security:
+      - BearerAuth: []
+      summary: Add a friend
+      tags:
+      - Friend
+  /friend/delete:
+    post:
+      consumes:
+      - application/json
+      description: Delete a friend by their user ID
+      parameters:
+      - description: Friend ID
+        in: body
+        name: json_object
+        required: true
+        schema:
+          $ref: '#/definitions/friend.DeleteFriendRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler._BaseResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler._ResponseError'
+      security:
+      - BearerAuth: []
+      summary: Delete a friend
+      tags:
+      - Friend
+  /friend/friends:
+    get:
+      consumes:
+      - application/json
+      description: Get a user's friends
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler._BaseResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/handler.friends'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler._ResponseError'
+      security:
+      - BearerAuth: []
+      summary: Get a user's friends
+      tags:
+      - Friend
+  /friend/manage/addToGroup:
+    post:
+      consumes:
+      - application/json
+      description: Add a friend to a group
+      parameters:
+      - description: AddToGroupRequest request
+        in: body
+        name: json_object
+        required: true
+        schema:
+          $ref: '#/definitions/friend.AddFriendToGroupRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler._BaseResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler._ResponseError'
+      security:
+      - BearerAuth: []
+      summary: Add a friend to a group
+      tags:
+      - Friend/manage
+  /friend/manage/createGroup:
+    post:
+      consumes:
+      - application/json
+      description: Create a friend group
+      parameters:
+      - description: CreateFriendGroupRequest request
+        in: body
+        name: json_object
+        required: true
+        schema:
+          $ref: '#/definitions/friend.CreateFriendGroupRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler._BaseResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler._ResponseError'
+      security:
+      - BearerAuth: []
+      summary: Create a friend group
+      tags:
+      - Friend/manage
+  /friend/manage/deleteFromGroup:
+    post:
+      consumes:
+      - application/json
+      description: Delete a friend from a group
+      parameters:
+      - description: DeleteFromGroupRequest request
+        in: body
+        name: json_object
+        required: true
+        schema:
+          $ref: '#/definitions/friend.AddFriendToGroupRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler._BaseResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler._ResponseError'
+      security:
+      - BearerAuth: []
+      summary: Delete a friend from a group
+      tags:
+      - Friend/manage
+  /friend/manage/friendGroup:
+    get:
+      consumes:
+      - application/json
+      description: Get a user's friend groups
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler._BaseResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/handler.friendGroup'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler._ResponseError'
+      security:
+      - BearerAuth: []
+      summary: Get a user's friend groups
+      tags:
+      - Friend/manage
+  /friend/pending:
+    get:
+      consumes:
+      - application/json
+      description: Get a user's pending friends
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler._BaseResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/handler.friends'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler._ResponseError'
+      security:
+      - BearerAuth: []
+      summary: Get a user's pending friends
+      tags:
+      - Friend
+    post:
+      consumes:
+      - application/json
+      description: Send Pending friend requests
+      parameters:
+      - description: Friend ID
+        in: body
+        name: json_object
+        required: true
+        schema:
+          $ref: '#/definitions/friend.AddFriendRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler._BaseResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler._ResponseError'
+      security:
+      - BearerAuth: []
+      summary: Send Pending friend requests
+      tags:
+      - Friend
+  /groupMessage:
+    get:
+      consumes:
+      - application/json
+      description: Get messages from a group
+      parameters:
+      - description: Group ID, limit, and offset
+        in: body
+        name: json_object
+        required: true
+        schema:
+          $ref: '#/definitions/groupMessage.GetGroupMessagesRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler._BaseResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/groupMessage.GroupMessage'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler._ResponseError'
+      security:
+      - BearerAuth: []
+      summary: Get group messages
+      tags:
+      - GroupMessage
+  /groupMessage/addGroupMember:
+    post:
+      consumes:
+      - application/json
+      description: Add a member to a group
+      parameters:
+      - description: Group ID and member ID
+        in: body
+        name: json_object
+        required: true
+        schema:
+          $ref: '#/definitions/groupMessage.AddGroupMemberRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler._BaseResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler._ResponseError'
+      security:
+      - BearerAuth: []
+      summary: Add a member to a group
+      tags:
+      - GroupMessage
+  /groupMessage/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a group with a list of members
+      parameters:
+      - description: Group name and member IDs
+        in: body
+        name: json_object
+        required: true
+        schema:
+          $ref: '#/definitions/groupMessage.CreateGroupRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler._BaseResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler._ResponseError'
+      security:
+      - BearerAuth: []
+      summary: Create a message group
+      tags:
+      - GroupMessage
+  /groupMessage/send:
+    post:
+      consumes:
+      - application/json
+      description: Send a message to a group
+      parameters:
+      - description: Group ID and content
+        in: body
+        name: json_object
+        required: true
+        schema:
+          $ref: '#/definitions/groupMessage.SendGroupMessageRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler._BaseResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler._ResponseError'
+      security:
+      - BearerAuth: []
+      summary: Send a group message
+      tags:
+      - GroupMessage
+  /message:
+    get:
+      consumes:
+      - application/json
+      description: Get messages between a user and a friend
+      parameters:
+      - description: Peer ID, offset and  limit
+        in: body
+        name: json_object
+        required: true
+        schema:
+          $ref: '#/definitions/message.GetMessagesRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler._BaseResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/message.GetMessagesResponse'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler._ResponseError'
+      security:
+      - BearerAuth: []
+      summary: Get messages
+      tags:
+      - Message
+  /message/send:
+    post:
+      consumes:
+      - application/json
+      description: Send a message to a friend
+      parameters:
+      - description: Receiver ID and content
+        in: body
+        name: json_object
+        required: true
+        schema:
+          $ref: '#/definitions/message.SendMessageRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler._BaseResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler._ResponseError'
+      security:
+      - BearerAuth: []
+      summary: Send a message
+      tags:
+      - Message
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: Login a user with a username and password
+      parameters:
+      - description: login request
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/user.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler._BaseResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/user.LoginResponse'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler._ResponseError'
+      summary: Login a user
+      tags:
+      - User
+  /user/logout:
+    post:
+      consumes:
+      - application/json
+      description: Logout a user by invalidating their token
+      parameters:
+      - description: Token
+        in: body
+        name: token
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler._BaseResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/user.LogoutResponse'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler._ResponseError'
+      summary: Logout a user
+      tags:
+      - User
+  /user/profile:
+    get:
+      description: Get a user's profile
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler._BaseResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/user.GetUserProfileResponse'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler._ResponseError'
+      security:
+      - BearerAuth: []
+      summary: Get a user's profile
+      tags:
+      - User/profile
+  /user/profile/avatar:
+    get:
+      description: Download a user's avatar
+      produces:
+      - image/jpeg
+      responses:
+        "200":
+          description: avatar
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler._ResponseError'
+      security:
+      - BearerAuth: []
+      summary: Download a user's avatar
+      tags:
+      - User/profile
+  /user/profile/avatar/upload:
+    put:
+      consumes:
+      - multipart/form-data
+      description: Upload a user's avatar
+      parameters:
+      - description: avatar
+        in: formData
+        name: avatar
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler._BaseResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler._ResponseError'
+      security:
+      - BearerAuth: []
+      summary: Upload a user's avatar
+      tags:
+      - User/profile
+  /user/profile/update:
+    put:
+      consumes:
+      - application/json
+      description: Update a user's profile
+      parameters:
+      - description: updateProfile request
+        in: body
+        name: avatar
+        required: true
+        schema:
+          $ref: '#/definitions/user.UpdateUserProfileRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler._BaseResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler._ResponseError'
+      security:
+      - BearerAuth: []
+      summary: Update a user's profile
+      tags:
+      - User/profile
+  /user/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user with a username and password
+      parameters:
+      - description: register request
+        in: body
+        name: json_object
+        required: true
+        schema:
+          $ref: '#/definitions/user.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler._BaseResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/user.RegisterResponse'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler._ResponseError'
+      summary: Register a new user
+      tags:
+      - User
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

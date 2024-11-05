@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"crypto/ed25519"
 	"testing"
 	"time"
 
@@ -9,13 +10,20 @@ import (
 )
 
 func TestGenerateToken(t *testing.T) {
-	tokenString, err := GenerateToken(1, "testuser")
+
+	PublicKey, PrivateKey, _ = ed25519.GenerateKey(nil)
+
+	tokenString, err := GenerateToken(1, "testuser", "testIssuer")
+
 	assert.NoError(t, err)
+
 	assert.NotEmpty(t, tokenString)
+
 }
 
 func TestParseToken_Expired(t *testing.T) {
-	// 创建一个过期的 token
+	PublicKey, PrivateKey, _ = ed25519.GenerateKey(nil)
+
 	now := time.Now()
 	claims := Claims{
 		UserID:   1,
@@ -23,15 +31,14 @@ func TestParseToken_Expired(t *testing.T) {
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(now.Add(-1 * time.Hour)), // 设置为1小时前过期
 			IssuedAt:  jwt.NewNumericDate(now.Add(-2 * time.Hour)), // 设置为2小时前签发
-			Issuer:    Issuer,
+			Issuer:    "testIssuer",
 		},
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodEdDSA, claims)
-	tokenString, err := token.SignedString(privateKey)
+	tokenString, err := token.SignedString(PrivateKey)
 	assert.NoError(t, err)
 
-	// 解析 token
 	parsedClaims, err := ParseToken(tokenString)
 	assert.Error(t, err)
 	assert.Nil(t, parsedClaims)
@@ -39,7 +46,9 @@ func TestParseToken_Expired(t *testing.T) {
 }
 
 func TestParseToken_Valid(t *testing.T) {
-	tokenString, err := GenerateToken(1, "testuser")
+	PublicKey, PrivateKey, _ = ed25519.GenerateKey(nil)
+
+	tokenString, err := GenerateToken(1, "testuser", "testIssuer")
 	assert.NoError(t, err)
 
 	parsedClaims, err := ParseToken(tokenString)

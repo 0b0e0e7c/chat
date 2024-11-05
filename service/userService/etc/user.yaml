@@ -1,0 +1,19 @@
+Name: user.rpc
+ListenOn: 0.0.0.0:8080
+Etcd:
+  Hosts:
+    - 127.0.0.1:2379
+  Key: user.rpc
+
+DataSource: "root:secret@tcp(127.0.0.1:3306)/chat?charset=utf8mb4&parseTime=True&loc=Local"
+
+CacheRedis:
+  Host: "127.0.0.1:6379"
+  Type: "node"
+  Pass: "111"
+
+CertConfig:
+  CertFile: "./etc/jwt/public.pem"
+  KeyFile: "./etc/jwt/private.pem"
+
+Mode: "dev"

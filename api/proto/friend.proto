@@ -4,24 +4,85 @@ package friend;
 
 option go_package = "/friend";
 
-message AddFriendRequest {
-  int64 userId = 1;
-  int64 friendId = 2;
+message FriendItem {
+  int64 user_id = 1;
 }
 
-message AddFriendResponse {
+message FriendGroupItem {
+  int64 group_id = 1;
+  string group_name = 2;
+  repeated FriendItem friends = 3;
+}
+
+message AddFriendRequest {
+  int64 user_id = 1;
+  int64 friend_id = 2;
+}
+
+message GeneralResponse {
   bool success = 1;
 }
 
 message GetFriendsRequest {
-  int64 userId = 1;
+  int64 user_id = 1;
 }
 
 message GetFriendsResponse {
-  repeated int64 friendIds = 1;
+  repeated FriendItem friends = 1;
+}
+
+
+message DeleteFriendRequest {
+  int64 user_id = 1;
+  int64 friend_id = 2;
+}
+
+message CreateFriendGroupRequest {
+  int64 user_id = 1;
+  string group_name = 3;
+}
+
+message CreateFriendGroupResponse {
+  int64 group_id = 1;
+}
+
+message AddFriendToGroupRequest {
+  int64 user_id = 1;
+  int64 friend_id = 2;
+  int64 group_id = 3;
+}
+
+
+message GetFriendGroupRequest {
+  int64 user_id = 1;
+}
+
+message GetFriendGroupResponse {
+  repeated FriendGroupItem groups = 1;
+}
+
+// check if two users are friends
+message CheckIsFriendRequest {
+  int64 user_id = 1;
+  int64 friend_id = 2;
+}
+
+message CheckIsFriendResponse {
+  bool is_friend = 1;
 }
 
 service FriendService {
-  rpc AddFriend(AddFriendRequest) returns (AddFriendResponse) {}
+  rpc PendingRequest(AddFriendRequest) returns (GeneralResponse) {}
+  rpc ConfirmRequest(AddFriendRequest) returns (GeneralResponse) {}
   rpc GetFriends(GetFriendsRequest) returns (GetFriendsResponse) {}
+  rpc GetPendingRequests(GetFriendsRequest) returns (GetFriendsResponse) {}
+  rpc DeleteFriend(DeleteFriendRequest) returns (GeneralResponse) {}
+
+  rpc CreateFriendGroup(CreateFriendGroupRequest) returns (CreateFriendGroupResponse) {}
+  rpc AddFriendToGroup(AddFriendToGroupRequest) returns (GeneralResponse) {}
+  rpc GetFriendGroup(GetFriendGroupRequest) returns (GetFriendGroupResponse) {}
+  rpc DeleteFriendFromGroup(AddFriendToGroupRequest) returns (GeneralResponse) {}
+
+  rpc CheckIsFriend(CheckIsFriendRequest) returns (CheckIsFriendResponse) {}
 }
+

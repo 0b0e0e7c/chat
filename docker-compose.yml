@@ -1,5 +1,3 @@
-version: "3"
-
 services:
   mysql:
     image: mysql:8
@@ -20,6 +18,8 @@ services:
       - "6379:6379"
     restart: always
     command: redis-server --requirepass 111
+    volumes:
+      - redis-data:/data
 
   etcd:
     image: bitnami/etcd:latest
@@ -29,6 +29,28 @@ services:
     ports:
       - "2379:2379"
     restart: always
-    
+
+  minio:
+    image: minio/minio
+    container_name: minio
+    environment:
+      MINIO_ACCESS_KEY: admin
+      MINIO_SECRET_KEY: admin123
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    restart: always
+    command: server --console-address ':9001' /data  
+    volumes:
+      - minio-data:/data
+
 volumes:
   mysql-data:
+    external: true
+    name: chat_mysql-data
+  redis-data:
+    external: true
+    name: chat_redis-data
+  minio-data:
+    external: true
+    name: chat_minio-data

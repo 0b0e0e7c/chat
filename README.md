@@ -1,6 +1,6 @@
 # Chat 项目
 
-## [项目文档](https://jackeychattingdoc.pages.dev/)
+## [项目文档](https://0b0e0e7c-doc.pages.dev/)
 
 ## Setup
 
